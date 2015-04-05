@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrafficSignRecognition", "EmguTutorial\TrafficSignRecognition.csproj", "{F6E45375-E586-4119-BA8D-0D9E2D01F940}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrafficSignRecognition", "TrafficSignRecognition\TrafficSignRecognition.csproj", "{F6E45375-E586-4119-BA8D-0D9E2D01F940}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

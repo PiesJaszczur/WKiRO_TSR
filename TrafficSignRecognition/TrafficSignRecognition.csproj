@@ -7,8 +7,8 @@
     <ProjectGuid>{F6E45375-E586-4119-BA8D-0D9E2D01F940}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EmguTutorial</RootNamespace>
-    <AssemblyName>EmguTutorial</AssemblyName>
+    <RootNamespace>TrafficSignRecognition</RootNamespace>
+    <AssemblyName>TrafficSignRecognition</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

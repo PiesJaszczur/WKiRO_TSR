@@ -1,4 +1,4 @@
-﻿namespace EmguTutorial
+﻿namespace TrafficSignRecognition
 {
     partial class Form1
     {
@@ -47,7 +47,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::EmguTutorial.Properties.Resources._2013_09_18_19_20_54;
+            this.pictureBox1.Image = global::TrafficSignRecognition.Properties.Resources._2013_09_18_19_20_54;
             this.pictureBox1.Location = new System.Drawing.Point(3, 3);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(813, 501);
