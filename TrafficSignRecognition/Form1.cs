@@ -11,11 +11,27 @@ namespace TrafficSignRecognition
 {
     public partial class Form1 : Form
     {
+
+        private Image<Bgr, Byte> orginalImage;
+        private Image<Bgr, Byte> convertedImage;
+        private const int guassianKernelSizeDefault = 5;
+        private const int apertureSizeDefault = 3;
+        private const double threshCanny1ValueDefault = 40;
+        private const double threshCanny2ValueDefault = 80;
+        private const double threshCircle1ValueDefault = threshCanny2ValueDefault;
+        private const double accumulatorCircleNumericValueDefault = 2 * threshCircle1ValueDefault;
+        private const double resolutionCricleValueDefault = 2;
+        private const double minDistCircleValueDefault = 30;
+        private const double minRadCircleNumericValueDefault = 30;
+        private const double maxRadCirclNumericValueDefault = 100;
+
+
         public Form1()
         {
             InitializeComponent();
             InitializeGuassianKernelNumeric();
             InitializeCannyParameters();
+            InitializeCircleParameters();
            
         }
 
@@ -28,23 +44,37 @@ namespace TrafficSignRecognition
 
         private  void InitializeCannyParameters()
         {
-            thresh1Numeric.Minimum = 0;
-            thresh1Numeric.Value = (decimal)thresh1ValueDefault;
+            threshCanny1Numeric.Minimum = 0;
+            threshCanny1Numeric.Maximum = 255;
+            threshCanny1Numeric.Value = (decimal)threshCanny1ValueDefault;
 
-            thresh2Numeric.Minimum = 0;
-            thresh2Numeric.Value = (decimal)thresh2ValueDefault;
+            threshCanny2Numeric.Minimum = 0;
+            threshCanny2Numeric.Maximum = 255;
+            threshCanny2Numeric.Value = (decimal)threshCanny2ValueDefault;
 
             apertureNumeric.Minimum = 0;
             apertureNumeric.Maximum = 100;
             apertureNumeric.Value = apertureSizeDefault;
         }
 
-        private Image<Bgr, Byte> orginalImage;
-        private Image<Bgr, Byte> convertedImage;
-        private const int guassianKernelSizeDefault = 5;
-        private const int apertureSizeDefault = 5;
-        private const double thresh1ValueDefault = 40;
-        private const double thresh2ValueDefault = 100;
+        private void InitializeCircleParameters()
+        {
+            threshCircle1Numeric.Minimum = 0;
+            threshCircle1Numeric.Maximum = 255;
+            threshCircle1Numeric.Value = (decimal)threshCircle1ValueDefault;
+
+            accumulatorCircleNumeric.Minimum = 0;
+            accumulatorCircleNumeric.Maximum = 255;
+            accumulatorCircleNumeric.Value = (decimal)accumulatorCircleNumericValueDefault;
+
+
+            resolutionCricleNumeric.Value = (decimal)resolutionCricleValueDefault;
+            minDistCircleNumeric.Value = (decimal)minDistCircleValueDefault;
+            minRadCircleNumeic.Value = (decimal)minRadCircleNumericValueDefault;
+            maxRadCirclNumeric.Value = (decimal)maxRadCirclNumericValueDefault;
+        }
+
+
 
 
 
@@ -96,7 +126,7 @@ namespace TrafficSignRecognition
         {
             try
             {
-                convertedImage = new Image<Bgr, byte>(convertedImage.Canny((double)thresh1Numeric.Value, (double)thresh2Numeric.Value, (int)apertureNumeric.Value).Bitmap);
+                convertedImage = new Image<Bgr, byte>(convertedImage.Canny((double)threshCanny1Numeric.Value, (double)threshCanny2Numeric.Value, (int)apertureNumeric.Value).Bitmap);
                 imageBox.Image = convertedImage.Bitmap;
             }
             catch (Emgu.CV.Util.CvException ex)
@@ -263,6 +293,49 @@ namespace TrafficSignRecognition
             }
         }
         #endregion
+
+        private void circlesBtn_Click(object sender, EventArgs e)
+        {
+            int gray1 = (int)threshCircle1Numeric.Value;
+            int gray2 = (int)accumulatorCircleNumeric.Value;
+
+            try
+            {
+                CircleF[] circles = convertedImage.Clone().HoughCircles(
+                new Bgr(gray1, gray1, gray1),
+                new Bgr(gray2, gray2, gray2),
+                (double)resolutionCricleNumeric.Value, //Resolution of the accumulator used to detect centers of the circles
+                (double)minDistCircleNumeric.Value, //min distance 
+                (int)minRadCircleNumeic.Value, //min radius
+                (int)maxRadCirclNumeric.Value //max radius
+                )[0]; //Get the circles from the first channel
+
+                Image<Bgr, Byte> circleImage = new Image<Bgr,byte>(orginalImage.Bitmap);
+
+
+
+                foreach (CircleF circle in circles)
+                {
+                    circleImage.Draw(circle, new Bgr(Color.Red), 2);
+                }
+                imageBox.Image = circleImage.Bitmap;
+
+
+            }
+            catch (Emgu.CV.Util.CvException ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+
+           
+
+        }
+
+        private void threshCanny2Numeric_ValueChanged(object sender, EventArgs e)
+        {
+            threshCircle1Numeric.Value = ((NumericUpDown)sender).Value;
+        }
 
 
 
