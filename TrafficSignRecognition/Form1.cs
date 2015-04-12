@@ -24,6 +24,10 @@ namespace TrafficSignRecognition
         private const double minDistCircleValueDefault = 30;
         private const double minRadCircleNumericValueDefault = 30;
         private const double maxRadCirclNumericValueDefault = 100;
+        private const double accuracyTriRecNumericValueDefault = 0.05;
+        private const double minPoleTriRecNumericValueDefault = 400;
+        private const double minRectAngleTriRecNumericValueDefault = 80;
+        private const double maxRectAngleTriRecNumericValueDefault = 100;
 
 
         public Form1()
@@ -32,7 +36,8 @@ namespace TrafficSignRecognition
             InitializeGuassianKernelNumeric();
             InitializeCannyParameters();
             InitializeCircleParameters();
-           
+            InitializeTriRecParameters();
+
         }
 
         private void InitializeGuassianKernelNumeric()
@@ -42,7 +47,7 @@ namespace TrafficSignRecognition
             guassianKernelNumeric.Minimum = 1;
         }
 
-        private  void InitializeCannyParameters()
+        private void InitializeCannyParameters()
         {
             threshCanny1Numeric.Minimum = 0;
             threshCanny1Numeric.Maximum = 255;
@@ -70,8 +75,30 @@ namespace TrafficSignRecognition
 
             resolutionCricleNumeric.Value = (decimal)resolutionCricleValueDefault;
             minDistCircleNumeric.Value = (decimal)minDistCircleValueDefault;
-            minRadCircleNumeic.Value = (decimal)minRadCircleNumericValueDefault;
+            minRadCircleNumeric.Value = (decimal)minRadCircleNumericValueDefault;
             maxRadCirclNumeric.Value = (decimal)maxRadCirclNumericValueDefault;
+        }
+
+        private void InitializeTriRecParameters()
+        {
+            accuracyTriRecNumeric.Minimum = 0;
+            accuracyTriRecNumeric.Maximum = 1;
+            accuracyTriRecNumeric.Value = (decimal)accuracyTriRecNumericValueDefault;
+
+            minPoleTriRecNumeric.Minimum = 0;
+            minPoleTriRecNumeric.Maximum = 5000;
+            minPoleTriRecNumeric.Value = (decimal)minPoleTriRecNumericValueDefault;
+
+            minPoleTriRecNumeric.Minimum = 0;
+            minPoleTriRecNumeric.Maximum = 360;
+            minRectAngleTriRecNumeric.Value = (decimal)minRectAngleTriRecNumericValueDefault;
+            minPoleTriRecNumeric.Minimum = 0;
+            minPoleTriRecNumeric.Maximum = 360;
+            maxRectAngleTriRecNumeric.Value = (decimal)maxRectAngleTriRecNumericValueDefault;
+                   
+      
+
+
         }
 
 
@@ -91,7 +118,7 @@ namespace TrafficSignRecognition
             }
         }
 
-        
+
 
         private void pictureBox1_MouseEnter(object sender, EventArgs e)
         {
@@ -104,8 +131,8 @@ namespace TrafficSignRecognition
 
         private void graScaleBtn_Click(object sender, EventArgs e)
         {
-            Image<Gray, Byte> grayImage = convertedImage.Convert<Gray,Byte>();
-            convertedImage= new Image<Bgr,byte>(grayImage.Bitmap);
+            Image<Gray, Byte> grayImage = convertedImage.Convert<Gray, Byte>();
+            convertedImage = new Image<Bgr, byte>(grayImage.Bitmap);
             imageBox.Image = convertedImage.Bitmap;
         }
 
@@ -115,7 +142,7 @@ namespace TrafficSignRecognition
             {
                 convertedImage = convertedImage.SmoothGaussian((int)guassianKernelNumeric.Value);
             }
-            catch(Emgu.CV.Util.CvException ex)
+            catch (Emgu.CV.Util.CvException ex)
             {
                 MessageBox.Show(ex.Message);
                 return;
@@ -141,111 +168,6 @@ namespace TrafficSignRecognition
             convertedImage = new Image<Bgr, byte>(orginalImage.Bitmap);
             imageBox.Image = convertedImage.Bitmap;
         }
-
-
-        //Find shapes from internet example
-        //private void findBtn_Click(object sender, EventArgs e)
-        //{
-        //    grayImage = orginalImage.Convert<Gray, Byte>().PyrDown().PyrUp();
-        //    convertedImgBox.Image = grayImage.ToBitmap();
-
-        //    Gray cannyThreshold = new Gray(180);
-        //    Gray cannyThresholdLinking = new Gray(120);
-        //    Gray circleAccumulatorThreshold = new Gray(120);
-
-        //    CircleF[] circles = grayImage.HoughCircles(
-        //    cannyThreshold,
-        //    circleAccumulatorThreshold,
-        //    5.0, //Resolution of the accumulator used to detect centers of the circles
-        //    10.0, //min distance 
-        //    5, //min radius
-        //    0 //max radius
-        //    )[0]; //Get the circles from the first channel
-
-
-        //    Image<Gray, Byte> cannyEdges = grayImage.Canny(cannyThreshold.Intensity, cannyThresholdLinking.Intensity);
-        //    LineSegment2D[] lines = cannyEdges.HoughLinesBinary(
-        //        1, //Distance resolution in pixel-related units
-        //        Math.PI / 45.0, //Angle resolution measured in radians.
-        //        20, //threshold
-        //        30, //min Line width
-        //        10 //gap between lines
-        //        )[0]; //Get the lines from the first channel
-
-        //    #region Find triangles and rectangles
-        //    List<Triangle2DF> triangleList = new List<Triangle2DF>();
-        //    List<MCvBox2D> boxList = new List<MCvBox2D>();
-
-        //    using (MemStorage storage = new MemStorage()) //allocate storage for contour approximation
-        //        for (Contour<Point> contours = cannyEdges.FindContours(); contours != null; contours = contours.HNext)
-        //        {
-        //            Contour<Point> currentContour = contours.ApproxPoly(contours.Perimeter * 0.05, storage);
-
-        //            if (contours.Area > 100) //only consider contours with area greater than 250
-        //            {
-        //                if (currentContour.Total == 3) //The contour has 3 vertices, it is a triangle
-        //                {
-        //                    Point[] pts = currentContour.ToArray();
-        //                    triangleList.Add(new Triangle2DF(
-        //                       pts[0],
-        //                       pts[1],
-        //                       pts[2]
-        //                       ));
-        //                }
-        //                else if (currentContour.Total == 4) //The contour has 4 vertices.
-        //                {
-        //                    #region determine if all the angles in the contour are within the range of [80, 100] degree
-        //                    bool isRectangle = true;
-        //                    Point[] pts = currentContour.ToArray();
-        //                    LineSegment2D[] edges = PointCollection.PolyLine(pts, true);
-
-        //                    for (int i = 0; i < edges.Length; i++)
-        //                    {
-        //                        double angle = Math.Abs(
-        //                           edges[(i + 1) % edges.Length].GetExteriorAngleDegree(edges[i]));
-        //                        if (angle < 80 || angle > 100)
-        //                        {
-        //                            isRectangle = false;
-        //                            break;
-        //                        }
-        //                    }
-        //                    #endregion
-
-        //                    if (isRectangle) boxList.Add(currentContour.GetMinAreaRect());
-        //                }
-        //            }
-
-        //            #region draw triangles and rectangles
-        //            Image<Bgr, Byte> triangleRectangleImage = orginalImage.CopyBlank();
-        //            foreach (Triangle2DF triangle in triangleList)
-        //                triangleRectangleImage.Draw(triangle, new Bgr(Color.DarkBlue), 2);
-        //            foreach (MCvBox2D box in boxList)
-        //                triangleRectangleImage.Draw(box, new Bgr(Color.DarkOrange), 2);
-        //            triangleRectangleImageBox.Image = triangleRectangleImage.Bitmap;
-        //            #endregion
-
-        //            #region draw circles
-        //            Image<Bgr, Byte> circleImage = orginalImage.CopyBlank();
-        //            foreach (CircleF circle in circles)
-        //                circleImage.Draw(circle, new Bgr(Color.Brown), 2);
-        //            circleImageBox.Image = circleImage.Bitmap;
-        //            #endregion
-
-        //            #region draw lines
-        //            Image<Bgr, Byte> lineImage = orginalImage.CopyBlank();
-        //            foreach (LineSegment2D line in lines)
-        //                lineImage.Draw(line, new Bgr(Color.Green), 2);
-        //            lineImageBox.Image = lineImage.Bitmap;
-        //            #endregion
-
-
-        //        }
-        //    #endregion
-
-
-
-
-        //}
 
         #region ScaleMoveImageSection
         private bool Dragging;
@@ -306,17 +228,17 @@ namespace TrafficSignRecognition
                 new Bgr(gray2, gray2, gray2),
                 (double)resolutionCricleNumeric.Value, //Resolution of the accumulator used to detect centers of the circles
                 (double)minDistCircleNumeric.Value, //min distance 
-                (int)minRadCircleNumeic.Value, //min radius
+                (int)minRadCircleNumeric.Value, //min radius
                 (int)maxRadCirclNumeric.Value //max radius
                 )[0]; //Get the circles from the first channel
 
-                Image<Bgr, Byte> circleImage = new Image<Bgr,byte>(orginalImage.Bitmap);
+                Image<Bgr, Byte> circleImage = new Image<Bgr, byte>(orginalImage.Bitmap);
 
 
 
                 foreach (CircleF circle in circles)
                 {
-                    circleImage.Draw(circle, new Bgr(Color.Red), 2);
+                    circleImage.Draw(circle, new Bgr(Color.Lime), 4);
                 }
                 imageBox.Image = circleImage.Bitmap;
 
@@ -328,7 +250,7 @@ namespace TrafficSignRecognition
                 return;
             }
 
-           
+
 
         }
 
@@ -337,10 +259,88 @@ namespace TrafficSignRecognition
             threshCircle1Numeric.Value = ((NumericUpDown)sender).Value;
         }
 
+        private void triRecBtn_Click(object sender, EventArgs e)
+        {
+            List<Triangle2DF> triangleList = new List<Triangle2DF>();
+            List<MCvBox2D> boxList = new List<MCvBox2D>();
+
+            try
+            {
+                using (MemStorage storage = new MemStorage())
+                    for (
+                       Contour<Point> contours = convertedImage.FindContours(
+                          Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_SIMPLE,
+                          Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_LIST,
+                          storage);
+                       contours != null;
+                       contours = contours.HNext)
+                    {
+                        Contour<Point> currentContour = contours.ApproxPoly(contours.Perimeter * (double)accuracyTriRecNumeric.Value, storage);
+
+                        if (currentContour.Area > (double)minPoleTriRecNumeric.Value)
+                        {
+                            if (currentContour.Total == 3) //The contour has 3 vertices, it is a triangle
+                            {
+                                Point[] pts = currentContour.ToArray();
+                                triangleList.Add(new Triangle2DF(
+                                   pts[0],
+                                   pts[1],
+                                   pts[2]
+                                   ));
+                            }
+                            else if (currentContour.Total == 4) //The contour has 4 vertices.
+                            {
+                                bool isRectangle = true;
+                                Point[] pts = currentContour.ToArray();
+                                LineSegment2D[] edges = PointCollection.PolyLine(pts, true);
+
+                                for (int i = 0; i < edges.Length; i++)
+                                {
+                                    double angle = Math.Abs(
+                                       edges[(i + 1) % edges.Length].GetExteriorAngleDegree(edges[i]));
+                                    if (angle < (double)minRectAngleTriRecNumeric.Value || angle > (double)maxRectAngleTriRecNumeric.Value)
+                                    {
+                                        isRectangle = false;
+                                        break;
+                                    }
+                                }
+
+                                if (isRectangle) boxList.Add(currentContour.GetMinAreaRect());
+                            }
+                        }
+
+                        Image<Bgr, Byte> triangleImage = new Image<Bgr, byte>(orginalImage.Bitmap);
 
 
 
 
+                        foreach (var t in triangleList)
+                        {
+                            triangleImage.Draw(t, new Bgr(Color.Lime), 4);
+                        }
+                        imageBox.Image = triangleImage.Bitmap;
+
+                        Image<Bgr, Byte> rectangleImage = new Image<Bgr, byte>(triangleImage.Bitmap);
+
+                        foreach (var r in boxList)
+                        {
+                            rectangleImage.Draw(r, new Bgr(Color.Lime), 4);
+                        }
+                        imageBox.Image = rectangleImage.Bitmap;
+
+                    }
+            }
+            catch (Emgu.CV.Util.CvException ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+
+
+
+
+
+        }
     }
 }
 
