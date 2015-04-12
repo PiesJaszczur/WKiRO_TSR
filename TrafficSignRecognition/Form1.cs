@@ -267,8 +267,10 @@ namespace TrafficSignRecognition
             try
             {
                 using (MemStorage storage = new MemStorage())
+                {
+                    Image<Gray, Byte> grayscaleImage = convertedImage.Convert<Gray, Byte>();
                     for (
-                       Contour<Point> contours = convertedImage.FindContours(
+                       Contour<Point> contours = grayscaleImage.FindContours(
                           Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_SIMPLE,
                           Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_LIST,
                           storage);
@@ -329,6 +331,7 @@ namespace TrafficSignRecognition
                         imageBox.Image = rectangleImage.Bitmap;
 
                     }
+                }
             }
             catch (Emgu.CV.Util.CvException ex)
             {
