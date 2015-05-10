@@ -6,12 +6,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace TrafficSignRecognition
 {
     public partial class Form1 : Form
     {
-
+        private List<Image<Bgr, Byte>> imageToAnalize;
         private Image<Bgr, Byte> orginalImage;
         private Image<Bgr, Byte> convertedImage;
         private const int guassianKernelSizeDefault = 5;
@@ -37,7 +38,7 @@ namespace TrafficSignRecognition
             InitializeCannyParameters();
             InitializeCircleParameters();
             InitializeTriRecParameters();
-
+            imageToAnalize = new List<Image<Bgr, byte>>();
         }
 
         private void InitializeGuassianKernelNumeric()
@@ -234,15 +235,18 @@ namespace TrafficSignRecognition
 
                 Image<Bgr, Byte> circleImage = new Image<Bgr, byte>(orginalImage.Bitmap);
 
-
-
                 foreach (CircleF circle in circles)
                 {
+                    int radius = (int)Math.Ceiling(circle.Radius); // gora, zeby wziac wiecej
+                    int x = (int)Math.Floor(circle.Center.X) - radius; // podloga, zeby wziac szerszy obszar
+                    int y = (int)Math.Floor(circle.Center.Y) - radius; // podloga, zeby wziac szerszy obszar
+                    Point point = new Point(x, y);
+                    var imageToAdd = circleImage.GetSubRect(new Rectangle(point, new Size(radius * 2, radius * 2)));
+                    imageToAnalize.Add(imageToAdd.Resize(30,30, Emgu.CV.CvEnum.INTER.CV_INTER_AREA, false));
                     circleImage.Draw(circle, new Bgr(Color.Lime), 4);
                 }
+
                 imageBox.Image = circleImage.Bitmap;
-
-
             }
             catch (Emgu.CV.Util.CvException ex)
             {
@@ -313,11 +317,19 @@ namespace TrafficSignRecognition
 
                         Image<Bgr, Byte> triangleImage = new Image<Bgr, byte>(orginalImage.Bitmap);
 
-
-
-
                         foreach (var t in triangleList)
                         {
+                            float[] xTable = new float[3] { t.V0.X, t.V1.X, t.V2.X };
+                            float[] yTable = new float[3] { t.V0.Y, t.V1.Y, t.V2.Y };
+                            int minX =  (int)Math.Floor(xTable.Min());
+                            int maxX = (int)Math.Floor(xTable.Max());
+                            int minY = (int)Math.Floor(yTable.Min());
+                            int maxY =  (int)Math.Floor(yTable.Max());
+                            Point point = new Point(minX, minY);
+                            int lengthX = maxX - minX;
+                            int lengthY = maxY - minY;
+                            var imageToAdd = triangleImage.GetSubRect(new Rectangle(point, new Size(maxX - minX, maxY - minY)));
+                            imageToAnalize.Add(imageToAdd.Resize(30, 30, Emgu.CV.CvEnum.INTER.CV_INTER_AREA, false));
                             triangleImage.Draw(t, new Bgr(Color.Lime), 4);
                         }
                         imageBox.Image = triangleImage.Bitmap;
@@ -326,6 +338,13 @@ namespace TrafficSignRecognition
 
                         foreach (var r in boxList)
                         {
+                            int xLength = (int)Math.Ceiling(r.size.Width); // gora, zeby wziac wiecej
+                            int yLength = (int)Math.Ceiling(r.size.Height); // gora, zeby wziac wiecej
+                            int x = (int)Math.Floor(r.center.X) - xLength/2; // podloga, zeby wziac szerszy obszar
+                            int y = (int)Math.Floor(r.center.Y) - yLength/2; // podloga, zeby wziac szerszy obszar
+                            Point point = new Point(x, y);
+                            var imageToAdd = rectangleImage.GetSubRect(new Rectangle(point, new Size(xLength, yLength)));
+                            imageToAnalize.Add(imageToAdd.Resize(30,30, Emgu.CV.CvEnum.INTER.CV_INTER_AREA, false));
                             rectangleImage.Draw(r, new Bgr(Color.Lime), 4);
                         }
                         imageBox.Image = rectangleImage.Bitmap;
