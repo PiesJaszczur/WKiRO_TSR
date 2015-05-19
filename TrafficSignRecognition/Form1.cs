@@ -10,9 +10,25 @@ using System.Linq;
 
 namespace TrafficSignRecognition
 {
+    public class ImageInfo
+    {
+        public Image<Gray, Byte> Image { get; set; }
+        public double R { get; set; }
+        public double G { get; set; }
+        public double B { get; set; }
+
+        public ImageInfo(Image<Gray, Byte> image, double r, double g, double b)
+        {
+            Image = image;
+            R = r;
+            G = g;
+            B = b;
+        }
+    }
+
     public partial class Form1 : Form
     {
-        private List<Image<Bgr, Byte>> imageToAnalize;
+        private List<ImageInfo> imageToAnalize;
         private Image<Bgr, Byte> orginalImage;
         private Image<Bgr, Byte> convertedImage;
         private const int guassianKernelSizeDefault = 5;
@@ -38,7 +54,7 @@ namespace TrafficSignRecognition
             InitializeCannyParameters();
             InitializeCircleParameters();
             InitializeTriRecParameters();
-            imageToAnalize = new List<Image<Bgr, byte>>();
+            imageToAnalize = new List<ImageInfo>();
         }
 
         private void InitializeGuassianKernelNumeric()
@@ -242,7 +258,20 @@ namespace TrafficSignRecognition
                     int y = (int)Math.Floor(circle.Center.Y) - radius; // podloga, zeby wziac szerszy obszar
                     Point point = new Point(x, y);
                     var imageToAdd = circleImage.GetSubRect(new Rectangle(point, new Size(radius * 2, radius * 2)));
-                    imageToAnalize.Add(imageToAdd.Resize(30,30, Emgu.CV.CvEnum.INTER.CV_INTER_AREA, false));
+                    var resize = imageToAdd.Resize(30,30, Emgu.CV.CvEnum.INTER.CV_INTER_AREA, false);
+                    double r = 0;
+                    double g = 0;
+                    double b = 0;
+                    for (int i = 0; i < 30; i++)
+                    {
+                        for (int j = 0; j < 30; j++)
+                        {
+                            r += resize[i, j].Red;
+                            g += resize[i, j].Green;
+                            b += resize[i, j].Blue;
+                        }
+                    }
+                    imageToAnalize.Add(new ImageInfo(resize.Convert<Gray, byte>(), r / 900, g / 900, b / 900));
                     circleImage.Draw(circle, new Bgr(Color.Lime), 4);
                 }
 
@@ -329,23 +358,49 @@ namespace TrafficSignRecognition
                             int lengthX = maxX - minX;
                             int lengthY = maxY - minY;
                             var imageToAdd = triangleImage.GetSubRect(new Rectangle(point, new Size(maxX - minX, maxY - minY)));
-                            imageToAnalize.Add(imageToAdd.Resize(30, 30, Emgu.CV.CvEnum.INTER.CV_INTER_AREA, false));
+                            var resize = imageToAdd.Resize(30, 30, Emgu.CV.CvEnum.INTER.CV_INTER_AREA, false);
+                            double r = 0;
+                            double g = 0;
+                            double b = 0;
+                            for (int i = 0; i < 30; i++)
+                            {
+                                for (int j = 0; j < 30; j++)
+                                {
+                                    r += resize[i, j].Red;
+                                    g += resize[i, j].Green;
+                                    b += resize[i, j].Blue;
+                                }
+                            }
+                            imageToAnalize.Add(new ImageInfo(resize.Convert<Gray, byte>(), r / 900, g / 900, b / 900));
                             triangleImage.Draw(t, new Bgr(Color.Lime), 4);
                         }
                         imageBox.Image = triangleImage.Bitmap;
 
                         Image<Bgr, Byte> rectangleImage = new Image<Bgr, byte>(triangleImage.Bitmap);
 
-                        foreach (var r in boxList)
+                        foreach (var rec in boxList)
                         {
-                            int xLength = (int)Math.Ceiling(r.size.Width); // gora, zeby wziac wiecej
-                            int yLength = (int)Math.Ceiling(r.size.Height); // gora, zeby wziac wiecej
-                            int x = (int)Math.Floor(r.center.X) - xLength/2; // podloga, zeby wziac szerszy obszar
-                            int y = (int)Math.Floor(r.center.Y) - yLength/2; // podloga, zeby wziac szerszy obszar
+                            int xLength = (int)Math.Ceiling(rec.size.Width); // gora, zeby wziac wiecej
+                            int yLength = (int)Math.Ceiling(rec.size.Height); // gora, zeby wziac wiecej
+                            int x = (int)Math.Floor(rec.center.X) - xLength/2; // podloga, zeby wziac szerszy obszar
+                            int y = (int)Math.Floor(rec.center.Y) - yLength/2; // podloga, zeby wziac szerszy obszar
                             Point point = new Point(x, y);
                             var imageToAdd = rectangleImage.GetSubRect(new Rectangle(point, new Size(xLength, yLength)));
-                            imageToAnalize.Add(imageToAdd.Resize(30,30, Emgu.CV.CvEnum.INTER.CV_INTER_AREA, false));
-                            rectangleImage.Draw(r, new Bgr(Color.Lime), 4);
+                            var resize = imageToAdd.Resize(30, 30, Emgu.CV.CvEnum.INTER.CV_INTER_AREA, false);
+                            double r = 0;
+                            double g = 0;
+                            double b = 0;
+                            for (int i = 0; i < 30; i++)
+                            {
+                                for (int j = 0; j < 30; j++)
+                                {
+                                    r += resize[i, j].Red;
+                                    g += resize[i, j].Green;
+                                    b += resize[i, j].Blue;
+                                }
+                            }
+                            imageToAnalize.Add(new ImageInfo(resize.Convert<Gray, byte>(), r / 900, g / 900, b / 900));
+                            rectangleImage.Draw(rec, new Bgr(Color.Lime), 4);
                         }
                         imageBox.Image = rectangleImage.Bitmap;
 
