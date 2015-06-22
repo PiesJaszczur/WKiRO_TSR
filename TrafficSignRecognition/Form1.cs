@@ -274,13 +274,16 @@ namespace TrafficSignRecognition
             openFileDialog.Multiselect = true;
             openFileDialog.ShowDialog();
 
-            var parameters = GetUserSelectedParameters();
-
             foreach (var filename in openFileDialog.FileNames)
             {
                 var imagesToAnalyze = new List<ImageInfo>();
-
-                Preprocessing.preprocessImage(filename, parameters, imagesToAnalyze);
+                var parameters = GetUserSelectedParameters();
+                
+                var blurKernelSizes = new[] {3,5,7,9};
+                foreach(var blurKernelSize in blurKernelSizes){
+                    parameters.blurParameters.kernelSize = blurKernelSize;
+                    Preprocessing.preprocessImage(filename, parameters, imagesToAnalyze);
+                }
 
                 imagesToAnalyze = imagesToAnalyze.Distinct().ToList();
 
