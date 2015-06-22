@@ -7,61 +7,48 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Linq;
+using System.Threading;
+using System.IO;
 
 namespace TrafficSignRecognition
 {
-    public class ImageInfo
-    {
-        public Image<Gray, Byte> Image { get; set; }
-        public double R { get; set; }
-        public double G { get; set; }
-        public double B { get; set; }
-
-        public ImageInfo(Image<Gray, Byte> image, double r, double g, double b)
-        {
-            Image = image;
-            R = r;
-            G = g;
-            B = b;
-        }
-    }
-
     public partial class Form1 : Form
     {
-        private List<ImageInfo> imageToAnalize;
-        private Image<Bgr, Byte> orginalImage;
+        private List<ImageInfo> imagesToAnalyze;
+        private Image<Bgr, Byte> originalImage;
         private Image<Bgr, Byte> convertedImage;
-        private const int guassianKernelSizeDefault = 5;
-        private const int apertureSizeDefault = 3;
-        private const double threshCanny1ValueDefault = 40;
-        private const double threshCanny2ValueDefault = 80;
-        private const double threshCircle1ValueDefault = threshCanny2ValueDefault;
-        private const double accumulatorCircleNumericValueDefault = 2 * threshCircle1ValueDefault;
-        private const double resolutionCricleValueDefault = 2;
-        private const double minDistCircleValueDefault = 30;
-        private const double minRadCircleNumericValueDefault = 30;
-        private const double maxRadCirclNumericValueDefault = 100;
-        private const double accuracyTriRecNumericValueDefault = 0.05;
-        private const double minPoleTriRecNumericValueDefault = 400;
-        private const double minRectAngleTriRecNumericValueDefault = 80;
-        private const double maxRectAngleTriRecNumericValueDefault = 100;
+        private string imageFileName;
+        private const int gaussianKernelSizeDefault = Preprocessing.GaussianBlurParameters.Defaults.kernelSize;
+        private const int apertureSizeDefault = Preprocessing.FindEdgesCannyParameters.Defaults.apertureSize;
+        private const double threshCanny1ValueDefault = Preprocessing.FindEdgesCannyParameters.Defaults.thresh;
+        private const double threshCanny2ValueDefault = Preprocessing.FindEdgesCannyParameters.Defaults.threshLinking;
+        private const double threshCircle1ValueDefault = Preprocessing.FindCirclesParameters.Defaults.thresholdMax;
+        private const double accumulatorCircleNumericValueDefault = Preprocessing.FindCirclesParameters.Defaults.accumulator;
+        private const double resolutionCircleValueDefault = Preprocessing.FindCirclesParameters.Defaults.resolution;
+        private const double minDistCircleValueDefault = Preprocessing.FindCirclesParameters.Defaults.minDistance;
+        private const double minRadCircleNumericValueDefault = Preprocessing.FindCirclesParameters.Defaults.minRadius;
+        private const double maxRadCirclNumericValueDefault = Preprocessing.FindCirclesParameters.Defaults.maxRadius;
+        private const double accuracyTriRecNumericValueDefault = Preprocessing.FindTrianglesAndRectanglesParameters.Defaults.accuracy;
+        private const double minPoleTriRecNumericValueDefault = Preprocessing.FindTrianglesAndRectanglesParameters.Defaults.minArea;
+        private const double minRectAngleTriRecNumericValueDefault = Preprocessing.FindTrianglesAndRectanglesParameters.Defaults.minRectangleAngle;
+        private const double maxRectAngleTriRecNumericValueDefault = Preprocessing.FindTrianglesAndRectanglesParameters.Defaults.maxRectangleAngle;
 
 
         public Form1()
         {
             InitializeComponent();
-            InitializeGuassianKernelNumeric();
+            InitializeGaussianKernelNumeric();
             InitializeCannyParameters();
             InitializeCircleParameters();
             InitializeTriRecParameters();
-            imageToAnalize = new List<ImageInfo>();
+            imagesToAnalyze = new List<ImageInfo>();
         }
 
-        private void InitializeGuassianKernelNumeric()
+        private void InitializeGaussianKernelNumeric()
         {
-            guassianKernelNumeric.Value = guassianKernelSizeDefault;
-            guassianKernelNumeric.Maximum = 101;
-            guassianKernelNumeric.Minimum = 1;
+            gaussianKernelNumeric.Value = gaussianKernelSizeDefault;
+            gaussianKernelNumeric.Maximum = 101;
+            gaussianKernelNumeric.Minimum = 1;
         }
 
         private void InitializeCannyParameters()
@@ -90,7 +77,7 @@ namespace TrafficSignRecognition
             accumulatorCircleNumeric.Value = (decimal)accumulatorCircleNumericValueDefault;
 
 
-            resolutionCricleNumeric.Value = (decimal)resolutionCricleValueDefault;
+            resolutionCricleNumeric.Value = (decimal)resolutionCircleValueDefault;
             minDistCircleNumeric.Value = (decimal)minDistCircleValueDefault;
             minRadCircleNumeric.Value = (decimal)minRadCircleNumericValueDefault;
             maxRadCirclNumeric.Value = (decimal)maxRadCirclNumericValueDefault;
@@ -112,30 +99,54 @@ namespace TrafficSignRecognition
             minPoleTriRecNumeric.Minimum = 0;
             minPoleTriRecNumeric.Maximum = 360;
             maxRectAngleTriRecNumeric.Value = (decimal)maxRectAngleTriRecNumericValueDefault;
-                   
-      
-
-
         }
 
-
-
-
-
+        private Preprocessing.PreprocessImageParameters GetUserSelectedParameters()
+        {
+            return new Preprocessing.PreprocessImageParameters()
+            {
+                blurParameters = new Preprocessing.GaussianBlurParameters()
+                {
+                    kernelSize = (int)gaussianKernelNumeric.Value
+                },
+                circleParameters = new Preprocessing.FindCirclesParameters()
+                {
+                    accumulator = (int)accumulatorCircleNumeric.Value,
+                    maxRadius = (int)maxRadCirclNumeric.Value,
+                    minDistance = (double)minDistCircleNumeric.Value,
+                    minRadius = (int)minRadCircleNumeric.Value,
+                    resolution = (double)resolutionCricleNumeric.Value,
+                    thresholdMax = (int)threshCircle1Numeric.Value
+                },
+                edgesParameters = new Preprocessing.FindEdgesCannyParameters()
+                {
+                    apertureSize = (int)apertureNumeric.Value,
+                    thresh = (double)threshCanny1Numeric.Value,
+                    threshLinking = (double)threshCanny2Numeric.Value
+                },
+                triangleRectangleParameters = new Preprocessing.FindTrianglesAndRectanglesParameters()
+                {
+                    accuracy = (double)accuracyTriRecNumeric.Value,
+                    maxRectangleAngle = (double)maxRectAngleTriRecNumeric.Value,
+                    minArea = (double)minPoleTriRecNumeric.Value,
+                    minRectangleAngle = (double)minRectAngleTriRecNumeric.Value
+                }
+            };
+        }
+        
         private void loadImageBtn_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog Openfile = new OpenFileDialog())
             {
                 if (Openfile.ShowDialog() == DialogResult.OK)
                 {
-                    orginalImage = new Image<Bgr, byte>(Openfile.FileName);
-                    convertedImage = new Image<Bgr, byte>(orginalImage.Bitmap);
+                    originalImage = new Image<Bgr, byte>(Openfile.FileName);
+                    imageFileName = Openfile.FileName;
+                    convertedImage = new Image<Bgr, byte>(originalImage.Bitmap);
                     imageBox.Image = convertedImage.ToBitmap();
                 }
             }
         }
-
-
 
         private void pictureBox1_MouseEnter(object sender, EventArgs e)
         {
@@ -155,34 +166,25 @@ namespace TrafficSignRecognition
 
         private void gaussianBtn_Click(object sender, EventArgs e)
         {
-            try
-            {
-                convertedImage = convertedImage.SmoothGaussian((int)guassianKernelNumeric.Value);
-            }
-            catch (Emgu.CV.Util.CvException ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
+            var parameters = GetUserSelectedParameters().blurParameters;
+
+            convertedImage = Preprocessing.gaussianBlur(parameters, convertedImage);
+
             imageBox.Image = convertedImage.Bitmap;
         }
         private void cannyBtn_Click(object sender, EventArgs e)
         {
-            try
-            {
-                convertedImage = new Image<Bgr, byte>(convertedImage.Canny((double)threshCanny1Numeric.Value, (double)threshCanny2Numeric.Value, (int)apertureNumeric.Value).Bitmap);
-                imageBox.Image = convertedImage.Bitmap;
-            }
-            catch (Emgu.CV.Util.CvException ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
+            var parameters = GetUserSelectedParameters().edgesParameters;
+
+            convertedImage = Preprocessing.findEdgesCanny(parameters, convertedImage);
+
+            imageBox.Image = convertedImage.Bitmap;
+
         }
 
         private void resetBtn_Click(object sender, EventArgs e)
         {
-            convertedImage = new Image<Bgr, byte>(orginalImage.Bitmap);
+            convertedImage = new Image<Bgr, byte>(originalImage.Bitmap);
             imageBox.Image = convertedImage.Bitmap;
         }
 
@@ -235,58 +237,11 @@ namespace TrafficSignRecognition
 
         private void circlesBtn_Click(object sender, EventArgs e)
         {
-            int gray1 = (int)threshCircle1Numeric.Value;
-            int gray2 = (int)accumulatorCircleNumeric.Value;
+            var parameters = GetUserSelectedParameters().circleParameters;
 
-            try
-            {
-                CircleF[] circles = convertedImage.Clone().HoughCircles(
-                new Bgr(gray1, gray1, gray1),
-                new Bgr(gray2, gray2, gray2),
-                (double)resolutionCricleNumeric.Value, //Resolution of the accumulator used to detect centers of the circles
-                (double)minDistCircleNumeric.Value, //min distance 
-                (int)minRadCircleNumeric.Value, //min radius
-                (int)maxRadCirclNumeric.Value //max radius
-                )[0]; //Get the circles from the first channel
-
-                Image<Bgr, Byte> circleImage = new Image<Bgr, byte>(orginalImage.Bitmap);
-
-                foreach (CircleF circle in circles)
-                {
-                    int radius = (int)Math.Ceiling(circle.Radius); // gora, zeby wziac wiecej
-                    int x = (int)Math.Floor(circle.Center.X) - radius; // podloga, zeby wziac szerszy obszar
-                    int y = (int)Math.Floor(circle.Center.Y) - radius; // podloga, zeby wziac szerszy obszar
-                    Point point = new Point(x, y);
-                    var imageToAdd = circleImage.GetSubRect(new Rectangle(point, new Size(radius * 2, radius * 2)));
-                    var resize = imageToAdd.Resize(30,30, Emgu.CV.CvEnum.INTER.CV_INTER_AREA, false);
-                    double r = 0;
-                    double g = 0;
-                    double b = 0;
-                    for (int i = 0; i < 30; i++)
-                    {
-                        for (int j = 0; j < 30; j++)
-                        {
-                            r += resize[i, j].Red;
-                            g += resize[i, j].Green;
-                            b += resize[i, j].Blue;
-                        }
-                    }
-                    imageToAnalize.Add(new ImageInfo(resize.Convert<Gray, byte>(), r / 900, g / 900, b / 900));
-                    circleImage.Draw(circle, new Bgr(Color.Lime), 4);
-                }
-
-                imageBox.Image = circleImage.Bitmap;
-            }
-            catch (Emgu.CV.Util.CvException ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
-
-
-
+            imageBox.Image = Preprocessing.findCircles(parameters, convertedImage, originalImage, imageFileName, imagesToAnalyze);
         }
-
+        
         private void threshCanny2Numeric_ValueChanged(object sender, EventArgs e)
         {
             threshCircle1Numeric.Value = ((NumericUpDown)sender).Value;
@@ -294,131 +249,67 @@ namespace TrafficSignRecognition
 
         private void triRecBtn_Click(object sender, EventArgs e)
         {
-            List<Triangle2DF> triangleList = new List<Triangle2DF>();
-            List<MCvBox2D> boxList = new List<MCvBox2D>();
+            var parameters = GetUserSelectedParameters().triangleRectangleParameters;
 
-            try
+            imageBox.Image = Preprocessing.findTrianglesAndRectangles(parameters, convertedImage, originalImage, imageFileName, imagesToAnalyze);
+        }
+        
+        private void saveImgBtn_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Jpeg Image|*.jpg";
+            saveFileDialog.Title = "Save image to file";
+            saveFileDialog.ShowDialog();
+
+            if (saveFileDialog.FileName != "")
             {
-                using (MemStorage storage = new MemStorage())
+                imageBox.Image.Save(saveFileDialog.FileName);
+            }
+        }
+
+        private void preprocessBatchBtn_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Select image files to preprocess";
+            openFileDialog.Multiselect = true;
+            openFileDialog.ShowDialog();
+
+            var parameters = GetUserSelectedParameters();
+
+            foreach (var filename in openFileDialog.FileNames)
+            {
+                var imagesToAnalyze = new List<ImageInfo>();
+
+                Preprocessing.preprocessImage(filename, parameters, imagesToAnalyze);
+
+                imagesToAnalyze = imagesToAnalyze.Distinct().ToList();
+
+                SaveImageInfo(imagesToAnalyze);
+            }
+        }
+
+        private void SaveImageInfo(List<ImageInfo> imagesToAnalyze)
+        {
+            foreach (var im in imagesToAnalyze)
+            {
+                //imageBox.Image = im.Image.ToBitmap();
+
+                string dir = Path.GetDirectoryName(im.OriginalFileName) + "\\processed";
+
+                if (!Directory.Exists(dir))
                 {
-                    Image<Gray, Byte> grayscaleImage = convertedImage.Convert<Gray, Byte>();
-                    for (
-                       Contour<Point> contours = grayscaleImage.FindContours(
-                          Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_SIMPLE,
-                          Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_LIST,
-                          storage);
-                       contours != null;
-                       contours = contours.HNext)
-                    {
-                        Contour<Point> currentContour = contours.ApproxPoly(contours.Perimeter * (double)accuracyTriRecNumeric.Value, storage);
-
-                        if (currentContour.Area > (double)minPoleTriRecNumeric.Value)
-                        {
-                            if (currentContour.Total == 3) //The contour has 3 vertices, it is a triangle
-                            {
-                                Point[] pts = currentContour.ToArray();
-                                triangleList.Add(new Triangle2DF(
-                                   pts[0],
-                                   pts[1],
-                                   pts[2]
-                                   ));
-                            }
-                            else if (currentContour.Total == 4) //The contour has 4 vertices.
-                            {
-                                bool isRectangle = true;
-                                Point[] pts = currentContour.ToArray();
-                                LineSegment2D[] edges = PointCollection.PolyLine(pts, true);
-
-                                for (int i = 0; i < edges.Length; i++)
-                                {
-                                    double angle = Math.Abs(
-                                       edges[(i + 1) % edges.Length].GetExteriorAngleDegree(edges[i]));
-                                    if (angle < (double)minRectAngleTriRecNumeric.Value || angle > (double)maxRectAngleTriRecNumeric.Value)
-                                    {
-                                        isRectangle = false;
-                                        break;
-                                    }
-                                }
-
-                                if (isRectangle) boxList.Add(currentContour.GetMinAreaRect());
-                            }
-                        }
-
-                        Image<Bgr, Byte> triangleImage = new Image<Bgr, byte>(orginalImage.Bitmap);
-
-                        foreach (var t in triangleList)
-                        {
-                            float[] xTable = new float[3] { t.V0.X, t.V1.X, t.V2.X };
-                            float[] yTable = new float[3] { t.V0.Y, t.V1.Y, t.V2.Y };
-                            int minX =  (int)Math.Floor(xTable.Min());
-                            int maxX = (int)Math.Floor(xTable.Max());
-                            int minY = (int)Math.Floor(yTable.Min());
-                            int maxY =  (int)Math.Floor(yTable.Max());
-                            Point point = new Point(minX, minY);
-                            int lengthX = maxX - minX;
-                            int lengthY = maxY - minY;
-                            var imageToAdd = triangleImage.GetSubRect(new Rectangle(point, new Size(maxX - minX, maxY - minY)));
-                            var resize = imageToAdd.Resize(30, 30, Emgu.CV.CvEnum.INTER.CV_INTER_AREA, false);
-                            double r = 0;
-                            double g = 0;
-                            double b = 0;
-                            for (int i = 0; i < 30; i++)
-                            {
-                                for (int j = 0; j < 30; j++)
-                                {
-                                    r += resize[i, j].Red;
-                                    g += resize[i, j].Green;
-                                    b += resize[i, j].Blue;
-                                }
-                            }
-                            imageToAnalize.Add(new ImageInfo(resize.Convert<Gray, byte>(), r / 900, g / 900, b / 900));
-                            triangleImage.Draw(t, new Bgr(Color.Lime), 4);
-                        }
-                        imageBox.Image = triangleImage.Bitmap;
-
-                        Image<Bgr, Byte> rectangleImage = new Image<Bgr, byte>(triangleImage.Bitmap);
-
-                        foreach (var rec in boxList)
-                        {
-                            int xLength = (int)Math.Ceiling(rec.size.Width); // gora, zeby wziac wiecej
-                            int yLength = (int)Math.Ceiling(rec.size.Height); // gora, zeby wziac wiecej
-                            int x = (int)Math.Floor(rec.center.X) - xLength/2; // podloga, zeby wziac szerszy obszar
-                            int y = (int)Math.Floor(rec.center.Y) - yLength/2; // podloga, zeby wziac szerszy obszar
-                            Point point = new Point(x, y);
-                            var imageToAdd = rectangleImage.GetSubRect(new Rectangle(point, new Size(xLength, yLength)));
-                            var resize = imageToAdd.Resize(30, 30, Emgu.CV.CvEnum.INTER.CV_INTER_AREA, false);
-                            double r = 0;
-                            double g = 0;
-                            double b = 0;
-                            for (int i = 0; i < 30; i++)
-                            {
-                                for (int j = 0; j < 30; j++)
-                                {
-                                    r += resize[i, j].Red;
-                                    g += resize[i, j].Green;
-                                    b += resize[i, j].Blue;
-                                }
-                            }
-                            imageToAnalize.Add(new ImageInfo(resize.Convert<Gray, byte>(), r / 900, g / 900, b / 900));
-                            rectangleImage.Draw(rec, new Bgr(Color.Lime), 4);
-                        }
-                        imageBox.Image = rectangleImage.Bitmap;
-
-                    }
+                    Directory.CreateDirectory(dir);
                 }
+                im.Image.Save(
+                    dir + "\\" +
+                    imagesToAnalyze.IndexOf(im) + "_" +
+                    Path.GetFileNameWithoutExtension(im.OriginalFileName) + "_" +
+                    im.R + "_" + im.G + "_" + im.B +
+                    ".bmp");
             }
-            catch (Emgu.CV.Util.CvException ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
-
-
-
-
-
         }
     }
+
 }
 
 
