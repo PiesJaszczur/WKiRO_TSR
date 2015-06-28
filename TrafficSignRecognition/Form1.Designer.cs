@@ -67,6 +67,14 @@
             this.resetBtn = new System.Windows.Forms.Button();
             this.saveImgBtn = new System.Windows.Forms.Button();
             this.preprocessBatchBtn = new System.Windows.Forms.Button();
+            this.teachNeuralNetworkBtn = new System.Windows.Forms.Button();
+            this.btnPredict = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.btnRecognize = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxRectAngleTriRecNumeric)).BeginInit();
@@ -83,13 +91,18 @@
             ((System.ComponentModel.ISupportInitialize)(this.threshCanny2Numeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.threshCanny1Numeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gaussianKernelNumeric)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // loadImageBtn
             // 
-            this.loadImageBtn.Location = new System.Drawing.Point(643, 545);
+            this.loadImageBtn.Location = new System.Drawing.Point(674, 545);
             this.loadImageBtn.Name = "loadImageBtn";
-            this.loadImageBtn.Size = new System.Drawing.Size(209, 36);
+            this.loadImageBtn.Size = new System.Drawing.Size(107, 36);
             this.loadImageBtn.TabIndex = 0;
             this.loadImageBtn.Text = "Open image";
             this.loadImageBtn.UseVisualStyleBackColor = true;
@@ -98,9 +111,9 @@
             // imageBox
             // 
             this.imageBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.imageBox.Location = new System.Drawing.Point(19, 15);
+            this.imageBox.Location = new System.Drawing.Point(9, 15);
             this.imageBox.Name = "imageBox";
-            this.imageBox.Size = new System.Drawing.Size(397, 344);
+            this.imageBox.Size = new System.Drawing.Size(507, 454);
             this.imageBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.imageBox.TabIndex = 1;
             this.imageBox.TabStop = false;
@@ -115,55 +128,27 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.maxRectAngleTriRecNumeric);
-            this.panel1.Controls.Add(this.minRectAngleTriRecNumeric);
-            this.panel1.Controls.Add(this.minRectAngleTriRecLbl);
-            this.panel1.Controls.Add(this.maxRectAngleTriRecLblbel1);
-            this.panel1.Controls.Add(this.minPoleTriRecLbl);
-            this.panel1.Controls.Add(this.minPoleTriRecNumeric);
-            this.panel1.Controls.Add(this.accuracyTriRecLbl);
-            this.panel1.Controls.Add(this.accuracyTriRecNumeric);
-            this.panel1.Controls.Add(this.triRecBtn);
-            this.panel1.Controls.Add(this.maxRadCircleLbl);
-            this.panel1.Controls.Add(this.minRadCircleLbl);
-            this.panel1.Controls.Add(this.maxRadCirclNumeric);
-            this.panel1.Controls.Add(this.minDistCircleLbl);
-            this.panel1.Controls.Add(this.resolutionCricleLbl);
-            this.panel1.Controls.Add(this.minRadCircleNumeric);
-            this.panel1.Controls.Add(this.minDistCircleNumeric);
-            this.panel1.Controls.Add(this.resolutionCricleNumeric);
-            this.panel1.Controls.Add(this.accumulatorCircleLbl);
-            this.panel1.Controls.Add(this.threshCircle1Lbl);
-            this.panel1.Controls.Add(this.accumulatorCircleNumeric);
-            this.panel1.Controls.Add(this.threshCircle1Numeric);
-            this.panel1.Controls.Add(this.circlesBtn);
-            this.panel1.Controls.Add(this.apertureLbl);
-            this.panel1.Controls.Add(this.threshCanny2Lbl);
-            this.panel1.Controls.Add(this.threshCanny1Lbl);
-            this.panel1.Controls.Add(this.apertureNumeric);
-            this.panel1.Controls.Add(this.threshCanny2Numeric);
-            this.panel1.Controls.Add(this.threshCanny1Numeric);
-            this.panel1.Controls.Add(this.cannyBtn);
-            this.panel1.Controls.Add(this.guassianKernelLbl);
-            this.panel1.Controls.Add(this.gaussianKernelNumeric);
-            this.panel1.Controls.Add(this.gaussianBtn);
-            this.panel1.Controls.Add(this.graScaleBtn);
+            this.panel1.Controls.Add(this.groupBox5);
+            this.panel1.Controls.Add(this.groupBox4);
+            this.panel1.Controls.Add(this.groupBox3);
+            this.panel1.Controls.Add(this.groupBox2);
+            this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Controls.Add(this.imageBox);
             this.panel1.Location = new System.Drawing.Point(33, 32);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(819, 507);
+            this.panel1.Size = new System.Drawing.Size(904, 483);
             this.panel1.TabIndex = 2;
             // 
             // maxRectAngleTriRecNumeric
             // 
-            this.maxRectAngleTriRecNumeric.Location = new System.Drawing.Point(712, 339);
+            this.maxRectAngleTriRecNumeric.Location = new System.Drawing.Point(245, 36);
             this.maxRectAngleTriRecNumeric.Name = "maxRectAngleTriRecNumeric";
             this.maxRectAngleTriRecNumeric.Size = new System.Drawing.Size(73, 20);
             this.maxRectAngleTriRecNumeric.TabIndex = 35;
             // 
             // minRectAngleTriRecNumeric
             // 
-            this.minRectAngleTriRecNumeric.Location = new System.Drawing.Point(610, 338);
+            this.minRectAngleTriRecNumeric.Location = new System.Drawing.Point(160, 34);
             this.minRectAngleTriRecNumeric.Name = "minRectAngleTriRecNumeric";
             this.minRectAngleTriRecNumeric.Size = new System.Drawing.Size(63, 20);
             this.minRectAngleTriRecNumeric.TabIndex = 34;
@@ -171,7 +156,7 @@
             // minRectAngleTriRecLbl
             // 
             this.minRectAngleTriRecLbl.AutoSize = true;
-            this.minRectAngleTriRecLbl.Location = new System.Drawing.Point(607, 320);
+            this.minRectAngleTriRecLbl.Location = new System.Drawing.Point(157, 16);
             this.minRectAngleTriRecLbl.Name = "minRectAngleTriRecLbl";
             this.minRectAngleTriRecLbl.Size = new System.Drawing.Size(73, 13);
             this.minRectAngleTriRecLbl.TabIndex = 33;
@@ -180,7 +165,7 @@
             // maxRectAngleTriRecLblbel1
             // 
             this.maxRectAngleTriRecLblbel1.AutoSize = true;
-            this.maxRectAngleTriRecLblbel1.Location = new System.Drawing.Point(709, 319);
+            this.maxRectAngleTriRecLblbel1.Location = new System.Drawing.Point(242, 16);
             this.maxRectAngleTriRecLblbel1.Name = "maxRectAngleTriRecLblbel1";
             this.maxRectAngleTriRecLblbel1.Size = new System.Drawing.Size(76, 13);
             this.maxRectAngleTriRecLblbel1.TabIndex = 32;
@@ -189,7 +174,7 @@
             // minPoleTriRecLbl
             // 
             this.minPoleTriRecLbl.AutoSize = true;
-            this.minPoleTriRecLbl.Location = new System.Drawing.Point(517, 319);
+            this.minPoleTriRecLbl.Location = new System.Drawing.Point(82, 16);
             this.minPoleTriRecLbl.Name = "minPoleTriRecLbl";
             this.minPoleTriRecLbl.Size = new System.Drawing.Size(44, 13);
             this.minPoleTriRecLbl.TabIndex = 31;
@@ -197,7 +182,7 @@
             // 
             // minPoleTriRecNumeric
             // 
-            this.minPoleTriRecNumeric.Location = new System.Drawing.Point(517, 339);
+            this.minPoleTriRecNumeric.Location = new System.Drawing.Point(82, 36);
             this.minPoleTriRecNumeric.Name = "minPoleTriRecNumeric";
             this.minPoleTriRecNumeric.Size = new System.Drawing.Size(63, 20);
             this.minPoleTriRecNumeric.TabIndex = 30;
@@ -205,7 +190,7 @@
             // accuracyTriRecLbl
             // 
             this.accuracyTriRecLbl.AutoSize = true;
-            this.accuracyTriRecLbl.Location = new System.Drawing.Point(437, 320);
+            this.accuracyTriRecLbl.Location = new System.Drawing.Point(11, 16);
             this.accuracyTriRecLbl.Name = "accuracyTriRecLbl";
             this.accuracyTriRecLbl.Size = new System.Drawing.Size(51, 13);
             this.accuracyTriRecLbl.TabIndex = 29;
@@ -214,16 +199,16 @@
             // accuracyTriRecNumeric
             // 
             this.accuracyTriRecNumeric.DecimalPlaces = 2;
-            this.accuracyTriRecNumeric.Location = new System.Drawing.Point(437, 339);
+            this.accuracyTriRecNumeric.Location = new System.Drawing.Point(11, 35);
             this.accuracyTriRecNumeric.Name = "accuracyTriRecNumeric";
             this.accuracyTriRecNumeric.Size = new System.Drawing.Size(51, 20);
             this.accuracyTriRecNumeric.TabIndex = 27;
             // 
             // triRecBtn
             // 
-            this.triRecBtn.Location = new System.Drawing.Point(606, 376);
+            this.triRecBtn.Location = new System.Drawing.Point(184, 63);
             this.triRecBtn.Name = "triRecBtn";
-            this.triRecBtn.Size = new System.Drawing.Size(179, 23);
+            this.triRecBtn.Size = new System.Drawing.Size(176, 23);
             this.triRecBtn.TabIndex = 26;
             this.triRecBtn.Text = "FindTrianglesAndRectangles";
             this.triRecBtn.UseVisualStyleBackColor = true;
@@ -232,7 +217,7 @@
             // maxRadCircleLbl
             // 
             this.maxRadCircleLbl.AutoSize = true;
-            this.maxRadCircleLbl.Location = new System.Drawing.Point(517, 252);
+            this.maxRadCircleLbl.Location = new System.Drawing.Point(92, 78);
             this.maxRadCircleLbl.Name = "maxRadCircleLbl";
             this.maxRadCircleLbl.Size = new System.Drawing.Size(34, 13);
             this.maxRadCircleLbl.TabIndex = 25;
@@ -241,7 +226,7 @@
             // minRadCircleLbl
             // 
             this.minRadCircleLbl.AutoSize = true;
-            this.minRadCircleLbl.Location = new System.Drawing.Point(437, 253);
+            this.minRadCircleLbl.Location = new System.Drawing.Point(12, 79);
             this.minRadCircleLbl.Name = "minRadCircleLbl";
             this.minRadCircleLbl.Size = new System.Drawing.Size(31, 13);
             this.minRadCircleLbl.TabIndex = 24;
@@ -249,7 +234,7 @@
             // 
             // maxRadCirclNumeric
             // 
-            this.maxRadCirclNumeric.Location = new System.Drawing.Point(517, 271);
+            this.maxRadCirclNumeric.Location = new System.Drawing.Point(95, 98);
             this.maxRadCirclNumeric.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -262,7 +247,7 @@
             // minDistCircleLbl
             // 
             this.minDistCircleLbl.AutoSize = true;
-            this.minDistCircleLbl.Location = new System.Drawing.Point(674, 193);
+            this.minDistCircleLbl.Location = new System.Drawing.Point(252, 18);
             this.minDistCircleLbl.Name = "minDistCircleLbl";
             this.minDistCircleLbl.Size = new System.Drawing.Size(59, 13);
             this.minDistCircleLbl.TabIndex = 22;
@@ -271,7 +256,7 @@
             // resolutionCricleLbl
             // 
             this.resolutionCricleLbl.AutoSize = true;
-            this.resolutionCricleLbl.Location = new System.Drawing.Point(603, 193);
+            this.resolutionCricleLbl.Location = new System.Drawing.Point(181, 18);
             this.resolutionCricleLbl.Name = "resolutionCricleLbl";
             this.resolutionCricleLbl.Size = new System.Drawing.Size(57, 13);
             this.resolutionCricleLbl.TabIndex = 21;
@@ -279,7 +264,7 @@
             // 
             // minRadCircleNumeric
             // 
-            this.minRadCircleNumeric.Location = new System.Drawing.Point(437, 272);
+            this.minRadCircleNumeric.Location = new System.Drawing.Point(15, 98);
             this.minRadCircleNumeric.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -292,7 +277,7 @@
             // minDistCircleNumeric
             // 
             this.minDistCircleNumeric.DecimalPlaces = 2;
-            this.minDistCircleNumeric.Location = new System.Drawing.Point(678, 220);
+            this.minDistCircleNumeric.Location = new System.Drawing.Point(256, 45);
             this.minDistCircleNumeric.Name = "minDistCircleNumeric";
             this.minDistCircleNumeric.Size = new System.Drawing.Size(55, 20);
             this.minDistCircleNumeric.TabIndex = 19;
@@ -300,7 +285,7 @@
             // resolutionCricleNumeric
             // 
             this.resolutionCricleNumeric.DecimalPlaces = 2;
-            this.resolutionCricleNumeric.Location = new System.Drawing.Point(606, 220);
+            this.resolutionCricleNumeric.Location = new System.Drawing.Point(184, 45);
             this.resolutionCricleNumeric.Name = "resolutionCricleNumeric";
             this.resolutionCricleNumeric.Size = new System.Drawing.Size(54, 20);
             this.resolutionCricleNumeric.TabIndex = 18;
@@ -308,7 +293,7 @@
             // accumulatorCircleLbl
             // 
             this.accumulatorCircleLbl.AutoSize = true;
-            this.accumulatorCircleLbl.Location = new System.Drawing.Point(514, 193);
+            this.accumulatorCircleLbl.Location = new System.Drawing.Point(92, 18);
             this.accumulatorCircleLbl.Name = "accumulatorCircleLbl";
             this.accumulatorCircleLbl.Size = new System.Drawing.Size(66, 13);
             this.accumulatorCircleLbl.TabIndex = 17;
@@ -317,7 +302,7 @@
             // threshCircle1Lbl
             // 
             this.threshCircle1Lbl.AutoSize = true;
-            this.threshCircle1Lbl.Location = new System.Drawing.Point(434, 193);
+            this.threshCircle1Lbl.Location = new System.Drawing.Point(12, 18);
             this.threshCircle1Lbl.Name = "threshCircle1Lbl";
             this.threshCircle1Lbl.Size = new System.Drawing.Size(74, 13);
             this.threshCircle1Lbl.TabIndex = 16;
@@ -326,7 +311,7 @@
             // accumulatorCircleNumeric
             // 
             this.accumulatorCircleNumeric.DecimalPlaces = 2;
-            this.accumulatorCircleNumeric.Location = new System.Drawing.Point(517, 220);
+            this.accumulatorCircleNumeric.Location = new System.Drawing.Point(95, 45);
             this.accumulatorCircleNumeric.Name = "accumulatorCircleNumeric";
             this.accumulatorCircleNumeric.Size = new System.Drawing.Size(63, 20);
             this.accumulatorCircleNumeric.TabIndex = 15;
@@ -334,14 +319,14 @@
             // threshCircle1Numeric
             // 
             this.threshCircle1Numeric.DecimalPlaces = 2;
-            this.threshCircle1Numeric.Location = new System.Drawing.Point(437, 220);
+            this.threshCircle1Numeric.Location = new System.Drawing.Point(15, 45);
             this.threshCircle1Numeric.Name = "threshCircle1Numeric";
             this.threshCircle1Numeric.Size = new System.Drawing.Size(54, 20);
             this.threshCircle1Numeric.TabIndex = 14;
             // 
             // circlesBtn
             // 
-            this.circlesBtn.Location = new System.Drawing.Point(699, 271);
+            this.circlesBtn.Location = new System.Drawing.Point(256, 107);
             this.circlesBtn.Name = "circlesBtn";
             this.circlesBtn.Size = new System.Drawing.Size(104, 23);
             this.circlesBtn.TabIndex = 13;
@@ -352,7 +337,7 @@
             // apertureLbl
             // 
             this.apertureLbl.AutoSize = true;
-            this.apertureLbl.Location = new System.Drawing.Point(565, 110);
+            this.apertureLbl.Location = new System.Drawing.Point(138, 16);
             this.apertureLbl.Name = "apertureLbl";
             this.apertureLbl.Size = new System.Drawing.Size(50, 13);
             this.apertureLbl.TabIndex = 12;
@@ -361,7 +346,7 @@
             // threshCanny2Lbl
             // 
             this.threshCanny2Lbl.AutoSize = true;
-            this.threshCanny2Lbl.Location = new System.Drawing.Point(490, 110);
+            this.threshCanny2Lbl.Location = new System.Drawing.Point(72, 16);
             this.threshCanny2Lbl.Name = "threshCanny2Lbl";
             this.threshCanny2Lbl.Size = new System.Drawing.Size(60, 13);
             this.threshCanny2Lbl.TabIndex = 11;
@@ -370,7 +355,7 @@
             // threshCanny1Lbl
             // 
             this.threshCanny1Lbl.AutoSize = true;
-            this.threshCanny1Lbl.Location = new System.Drawing.Point(422, 110);
+            this.threshCanny1Lbl.Location = new System.Drawing.Point(6, 16);
             this.threshCanny1Lbl.Name = "threshCanny1Lbl";
             this.threshCanny1Lbl.Size = new System.Drawing.Size(60, 13);
             this.threshCanny1Lbl.TabIndex = 10;
@@ -378,7 +363,7 @@
             // 
             // apertureNumeric
             // 
-            this.apertureNumeric.Location = new System.Drawing.Point(568, 137);
+            this.apertureNumeric.Location = new System.Drawing.Point(141, 32);
             this.apertureNumeric.Name = "apertureNumeric";
             this.apertureNumeric.Size = new System.Drawing.Size(47, 20);
             this.apertureNumeric.TabIndex = 9;
@@ -386,7 +371,7 @@
             // threshCanny2Numeric
             // 
             this.threshCanny2Numeric.DecimalPlaces = 2;
-            this.threshCanny2Numeric.Location = new System.Drawing.Point(493, 137);
+            this.threshCanny2Numeric.Location = new System.Drawing.Point(75, 32);
             this.threshCanny2Numeric.Name = "threshCanny2Numeric";
             this.threshCanny2Numeric.Size = new System.Drawing.Size(57, 20);
             this.threshCanny2Numeric.TabIndex = 8;
@@ -395,14 +380,14 @@
             // threshCanny1Numeric
             // 
             this.threshCanny1Numeric.DecimalPlaces = 2;
-            this.threshCanny1Numeric.Location = new System.Drawing.Point(437, 137);
+            this.threshCanny1Numeric.Location = new System.Drawing.Point(14, 32);
             this.threshCanny1Numeric.Name = "threshCanny1Numeric";
             this.threshCanny1Numeric.Size = new System.Drawing.Size(43, 20);
             this.threshCanny1Numeric.TabIndex = 7;
             // 
             // cannyBtn
             // 
-            this.cannyBtn.Location = new System.Drawing.Point(699, 137);
+            this.cannyBtn.Location = new System.Drawing.Point(256, 48);
             this.cannyBtn.Name = "cannyBtn";
             this.cannyBtn.Size = new System.Drawing.Size(104, 23);
             this.cannyBtn.TabIndex = 6;
@@ -413,7 +398,7 @@
             // guassianKernelLbl
             // 
             this.guassianKernelLbl.AutoSize = true;
-            this.guassianKernelLbl.Location = new System.Drawing.Point(551, 62);
+            this.guassianKernelLbl.Location = new System.Drawing.Point(156, 25);
             this.guassianKernelLbl.Name = "guassianKernelLbl";
             this.guassianKernelLbl.Size = new System.Drawing.Size(40, 13);
             this.guassianKernelLbl.TabIndex = 5;
@@ -426,14 +411,14 @@
             0,
             0,
             0});
-            this.gaussianKernelNumeric.Location = new System.Drawing.Point(610, 60);
+            this.gaussianKernelNumeric.Location = new System.Drawing.Point(202, 23);
             this.gaussianKernelNumeric.Name = "gaussianKernelNumeric";
             this.gaussianKernelNumeric.Size = new System.Drawing.Size(48, 20);
             this.gaussianKernelNumeric.TabIndex = 4;
             // 
             // gaussianBtn
             // 
-            this.gaussianBtn.Location = new System.Drawing.Point(699, 57);
+            this.gaussianBtn.Location = new System.Drawing.Point(256, 20);
             this.gaussianBtn.Name = "gaussianBtn";
             this.gaussianBtn.Size = new System.Drawing.Size(104, 23);
             this.gaussianBtn.TabIndex = 3;
@@ -443,7 +428,7 @@
             // 
             // graScaleBtn
             // 
-            this.graScaleBtn.Location = new System.Drawing.Point(699, 15);
+            this.graScaleBtn.Location = new System.Drawing.Point(256, 19);
             this.graScaleBtn.Name = "graScaleBtn";
             this.graScaleBtn.Size = new System.Drawing.Size(104, 23);
             this.graScaleBtn.TabIndex = 2;
@@ -453,7 +438,7 @@
             // 
             // resetBtn
             // 
-            this.resetBtn.Location = new System.Drawing.Point(553, 545);
+            this.resetBtn.Location = new System.Drawing.Point(593, 545);
             this.resetBtn.Name = "resetBtn";
             this.resetBtn.Size = new System.Drawing.Size(75, 36);
             this.resetBtn.TabIndex = 3;
@@ -463,7 +448,7 @@
             // 
             // saveImgBtn
             // 
-            this.saveImgBtn.Location = new System.Drawing.Point(437, 546);
+            this.saveImgBtn.Location = new System.Drawing.Point(483, 545);
             this.saveImgBtn.Name = "saveImgBtn";
             this.saveImgBtn.Size = new System.Drawing.Size(104, 35);
             this.saveImgBtn.TabIndex = 4;
@@ -481,11 +466,117 @@
             this.preprocessBatchBtn.UseVisualStyleBackColor = true;
             this.preprocessBatchBtn.Click += new System.EventHandler(this.preprocessBatchBtn_Click);
             // 
+            // teachNeuralNetworkBtn
+            // 
+            this.teachNeuralNetworkBtn.Location = new System.Drawing.Point(163, 546);
+            this.teachNeuralNetworkBtn.Name = "teachNeuralNetworkBtn";
+            this.teachNeuralNetworkBtn.Size = new System.Drawing.Size(124, 35);
+            this.teachNeuralNetworkBtn.TabIndex = 6;
+            this.teachNeuralNetworkBtn.Text = "Teach ANN";
+            this.teachNeuralNetworkBtn.UseVisualStyleBackColor = true;
+            this.teachNeuralNetworkBtn.Click += new System.EventHandler(this.teachNeuralNetworkBtn_Click);
+            // 
+            // btnPredict
+            // 
+            this.btnPredict.Location = new System.Drawing.Point(293, 546);
+            this.btnPredict.Name = "btnPredict";
+            this.btnPredict.Size = new System.Drawing.Size(103, 35);
+            this.btnPredict.TabIndex = 7;
+            this.btnPredict.Text = "Predict";
+            this.btnPredict.UseVisualStyleBackColor = true;
+            this.btnPredict.Click += new System.EventHandler(this.btnPredict_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.graScaleBtn);
+            this.groupBox1.Location = new System.Drawing.Point(522, 15);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(366, 55);
+            this.groupBox1.TabIndex = 36;
+            this.groupBox1.TabStop = false;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.gaussianBtn);
+            this.groupBox2.Controls.Add(this.gaussianKernelNumeric);
+            this.groupBox2.Controls.Add(this.guassianKernelLbl);
+            this.groupBox2.Location = new System.Drawing.Point(522, 76);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(366, 55);
+            this.groupBox2.TabIndex = 37;
+            this.groupBox2.TabStop = false;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.cannyBtn);
+            this.groupBox3.Controls.Add(this.threshCanny1Numeric);
+            this.groupBox3.Controls.Add(this.threshCanny2Numeric);
+            this.groupBox3.Controls.Add(this.apertureNumeric);
+            this.groupBox3.Controls.Add(this.threshCanny1Lbl);
+            this.groupBox3.Controls.Add(this.threshCanny2Lbl);
+            this.groupBox3.Controls.Add(this.apertureLbl);
+            this.groupBox3.Location = new System.Drawing.Point(522, 137);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(369, 81);
+            this.groupBox3.TabIndex = 38;
+            this.groupBox3.TabStop = false;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.circlesBtn);
+            this.groupBox4.Controls.Add(this.threshCircle1Numeric);
+            this.groupBox4.Controls.Add(this.accumulatorCircleNumeric);
+            this.groupBox4.Controls.Add(this.threshCircle1Lbl);
+            this.groupBox4.Controls.Add(this.accumulatorCircleLbl);
+            this.groupBox4.Controls.Add(this.resolutionCricleNumeric);
+            this.groupBox4.Controls.Add(this.minDistCircleNumeric);
+            this.groupBox4.Controls.Add(this.minRadCircleNumeric);
+            this.groupBox4.Controls.Add(this.resolutionCricleLbl);
+            this.groupBox4.Controls.Add(this.minDistCircleLbl);
+            this.groupBox4.Controls.Add(this.maxRadCirclNumeric);
+            this.groupBox4.Controls.Add(this.minRadCircleLbl);
+            this.groupBox4.Controls.Add(this.maxRadCircleLbl);
+            this.groupBox4.Location = new System.Drawing.Point(522, 224);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(369, 136);
+            this.groupBox4.TabIndex = 39;
+            this.groupBox4.TabStop = false;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.triRecBtn);
+            this.groupBox5.Controls.Add(this.maxRectAngleTriRecLblbel1);
+            this.groupBox5.Controls.Add(this.accuracyTriRecNumeric);
+            this.groupBox5.Controls.Add(this.accuracyTriRecLbl);
+            this.groupBox5.Controls.Add(this.minPoleTriRecNumeric);
+            this.groupBox5.Controls.Add(this.maxRectAngleTriRecNumeric);
+            this.groupBox5.Controls.Add(this.minPoleTriRecLbl);
+            this.groupBox5.Controls.Add(this.minRectAngleTriRecNumeric);
+            this.groupBox5.Controls.Add(this.minRectAngleTriRecLbl);
+            this.groupBox5.Location = new System.Drawing.Point(522, 366);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(366, 103);
+            this.groupBox5.TabIndex = 40;
+            this.groupBox5.TabStop = false;
+            // 
+            // btnRecognize
+            // 
+            this.btnRecognize.Location = new System.Drawing.Point(787, 524);
+            this.btnRecognize.Name = "btnRecognize";
+            this.btnRecognize.Size = new System.Drawing.Size(150, 57);
+            this.btnRecognize.TabIndex = 41;
+            this.btnRecognize.Text = "Open and recognize";
+            this.btnRecognize.UseVisualStyleBackColor = true;
+            this.btnRecognize.Click += new System.EventHandler(this.btnRecognize_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(899, 593);
+            this.ClientSize = new System.Drawing.Size(984, 590);
+            this.Controls.Add(this.btnRecognize);
+            this.Controls.Add(this.btnPredict);
+            this.Controls.Add(this.teachNeuralNetworkBtn);
             this.Controls.Add(this.preprocessBatchBtn);
             this.Controls.Add(this.saveImgBtn);
             this.Controls.Add(this.resetBtn);
@@ -495,7 +586,6 @@
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.imageBox)).EndInit();
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxRectAngleTriRecNumeric)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minRectAngleTriRecNumeric)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minPoleTriRecNumeric)).EndInit();
@@ -510,6 +600,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.threshCanny2Numeric)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.threshCanny1Numeric)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gaussianKernelNumeric)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -557,6 +656,14 @@
         private System.Windows.Forms.Label maxRectAngleTriRecLblbel1;
         private System.Windows.Forms.Button saveImgBtn;
         private System.Windows.Forms.Button preprocessBatchBtn;
+        private System.Windows.Forms.Button teachNeuralNetworkBtn;
+        private System.Windows.Forms.Button btnPredict;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Button btnRecognize;
     }
 }
 

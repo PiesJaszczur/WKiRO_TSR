@@ -133,7 +133,7 @@ namespace TrafficSignRecognition
                 }
             };
         }
-        
+
         private void loadImageBtn_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog Openfile = new OpenFileDialog())
@@ -241,7 +241,7 @@ namespace TrafficSignRecognition
 
             imageBox.Image = Preprocessing.findCircles(parameters, convertedImage, originalImage, imageFileName, imagesToAnalyze);
         }
-        
+
         private void threshCanny2Numeric_ValueChanged(object sender, EventArgs e)
         {
             threshCircle1Numeric.Value = ((NumericUpDown)sender).Value;
@@ -253,7 +253,7 @@ namespace TrafficSignRecognition
 
             imageBox.Image = Preprocessing.findTrianglesAndRectangles(parameters, convertedImage, originalImage, imageFileName, imagesToAnalyze);
         }
-        
+
         private void saveImgBtn_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -278,9 +278,13 @@ namespace TrafficSignRecognition
             {
                 var imagesToAnalyze = new List<ImageInfo>();
                 var parameters = GetUserSelectedParameters();
-                
-                var blurKernelSizes = new[] {3,5,7,9};
-                foreach(var blurKernelSize in blurKernelSizes){
+
+                // kazdy obraz analizujemy dla roznych stopni
+                // zmiękczenia. na podstawie eksperymentow 
+                // stwierdzilem ze ma to sens - M.S.
+                var blurKernelSizes = new[] { 3, 5, 7, 9, GetUserSelectedParameters().blurParameters.kernelSize }.Distinct().ToArray();
+                foreach (var blurKernelSize in blurKernelSizes)
+                {
                     parameters.blurParameters.kernelSize = blurKernelSize;
                     Preprocessing.preprocessImage(filename, parameters, imagesToAnalyze);
                 }
@@ -303,12 +307,100 @@ namespace TrafficSignRecognition
                 {
                     Directory.CreateDirectory(dir);
                 }
-                im.Image.Save(
+
+                var path =
                     dir + "\\" +
                     imagesToAnalyze.IndexOf(im) + "_" +
                     Path.GetFileNameWithoutExtension(im.OriginalFileName) + "_" +
                     im.R + "_" + im.G + "_" + im.B +
-                    ".bmp");
+                    ".bmp";
+
+                im.Image.Save(path);
+            }
+        }
+
+        NeuralNetwork nn = new NeuralNetwork();
+
+        private void teachNeuralNetworkBtn_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            fbd.Description = "Wybierz zbiór treningowy";
+            fbd.SelectedPath = Path.GetDirectoryName(Application.ExecutablePath);
+            DialogResult result = fbd.ShowDialog();
+            var path = fbd.SelectedPath;
+
+            if (!String.IsNullOrEmpty(path))
+            {
+                nn = new NeuralNetwork(path);
+            }
+
+        }
+
+        private void btnPredict_Click(object sender, EventArgs e)
+        {
+            if (nn == null)
+            {
+                MessageBox.Show("Sieć nie została nauczona");
+                return;
+            }
+
+            OpenFileDialog d = new OpenFileDialog();
+            d.Title = "Wybierz wstepnie przetworzony plik do rozpoznania";
+            d.ShowDialog();
+
+            if (!String.IsNullOrEmpty(d.FileName))
+            {
+                var inp = new NeuralNetworkInput(d.FileName);
+
+                var result = nn.Predict(inp);
+
+                MessageBox.Show(result.ToString());
+            }
+        }
+
+        private void btnRecognize_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog Openfile = new OpenFileDialog())
+            {
+                if (Openfile.ShowDialog() == DialogResult.OK)
+                {
+                    originalImage = new Image<Bgr, byte>(Openfile.FileName);
+                    imageFileName = Openfile.FileName;
+                    convertedImage = new Image<Bgr, byte>(originalImage.Bitmap);
+                    imageBox.Image = convertedImage.ToBitmap();
+
+                    var imagesToAnalyze = new List<ImageInfo>();
+                    var parameters = GetUserSelectedParameters();
+
+                    // kazdy obraz analizujemy dla roznych stopni
+                    // zmiękczenia. na podstawie eksperymentow 
+                    // stwierdzilem ze ma to sens - M.S.
+                    var blurKernelSizes = new[] { 3, 5, 7, 9, GetUserSelectedParameters().blurParameters.kernelSize }.Distinct().ToArray();
+                    foreach (var blurKernelSize in blurKernelSizes)
+                    {
+                        parameters.blurParameters.kernelSize = blurKernelSize;
+                        Preprocessing.preprocessImage(Openfile.FileName, parameters, imagesToAnalyze);
+                    }
+
+                    imagesToAnalyze = imagesToAnalyze.Distinct().ToList();
+
+                    var foundSignTypes = new List<TrafficSignType>();
+
+                    foreach (var im in imagesToAnalyze)
+                    {
+                        foundSignTypes.Add(nn.Predict(new NeuralNetworkInput(im)));
+                    }
+
+                    foundSignTypes = foundSignTypes.Distinct().ToList();
+
+                    string stringTypes = "";
+                    foreach (var st in foundSignTypes)
+                    {
+                        stringTypes += st.ToString() + "\n";
+                    }
+
+                    MessageBox.Show(stringTypes);
+                }
             }
         }
     }
