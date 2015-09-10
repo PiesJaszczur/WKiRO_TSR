@@ -223,7 +223,7 @@ namespace TrafficSignRecognition
         {
             switch (s.ToLower())
             {
-                case "ustap_pierwszenstwa": return TrafficSignType.UstapPierwszenstwa;
+                case "ustap_pierwsz": return TrafficSignType.UstapPierwszenstwa;
                 case "droga_z_pierw": return TrafficSignType.DrogaZPierwszenstwem;
                 case "zakaz_wjazdu": return TrafficSignType.ZakazWjazdu;
                 default: return TrafficSignType.Unrecognized;
